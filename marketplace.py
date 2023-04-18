@@ -182,3 +182,91 @@ class Marketplace:
                                  str(threading.current_thread().name), str(product))
 
         return products_in_cart
+
+
+class TestMarketplace(unittest.TestCase):
+    """
+    # Test class for Marketplace
+    """
+    def setUp(self):
+        self.marketplace = Marketplace(3)
+
+    def test_register_producer(self):
+        """
+        # Test register_producer method
+        """
+        producer_id_1 = self.marketplace.register_producer()
+        self.assertEqual(producer_id_1, 0)
+        producer_id_2 = self.marketplace.register_producer()
+        self.assertEqual(producer_id_2, 1)
+        producer_id_3 = self.marketplace.register_producer()
+        self.assertNotEqual(producer_id_3, 3)
+
+    def test_publish(self):
+        """
+        # Test publish method
+        """
+        producer_id = self.marketplace.register_producer()
+        product_1 = "product1"
+        product_2 = "product2"
+        product_3 = "product3"
+        product_4 = "product4"
+        self.assertTrue(self.marketplace.publish(producer_id, product_1))
+        self.assertTrue(self.marketplace.publish(producer_id, product_2))
+        self.assertTrue(self.marketplace.publish(producer_id, product_3))
+        self.assertFalse(self.marketplace.publish(producer_id, product_4))
+
+    def test_new_cart(self):
+        """
+        # Test new_cart method
+        """
+        cart_id_1 = self.marketplace.new_cart()
+        self.assertEqual(cart_id_1, 0)
+        cart_id_2 = self.marketplace.new_cart()
+        self.assertEqual(cart_id_2, 1)
+        cart_id_3 = self.marketplace.new_cart()
+        self.assertNotEqual(cart_id_3, 3)
+
+    def test_add_to_cart(self):
+        """
+        # Test add_to_cart method
+        """
+        producer_id_1 = self.marketplace.register_producer()
+        producer_id_2 = self.marketplace.register_producer()
+        product_1 = "product1"
+        product_2 = "product2"
+        product_3 = "product3"
+        product_4 = "product4"
+        self.marketplace.publish(producer_id_1, product_1)
+        self.marketplace.publish(producer_id_1, product_2)
+        self.marketplace.publish(producer_id_2, product_3)
+
+        cart_id = self.marketplace.new_cart()
+        self.assertTrue(self.marketplace.add_to_cart(cart_id, product_1))
+        self.assertTrue(self.marketplace.add_to_cart(cart_id, product_2))
+        self.assertTrue(self.marketplace.add_to_cart(cart_id, product_3))
+        self.assertFalse(self.marketplace.add_to_cart(cart_id, product_4))
+
+    def test_remove_from_cart(self):
+        """
+        # Test remove_from_cart method
+        """
+        producer_id_1 = self.marketplace.register_producer()
+        producer_id_2 = self.marketplace.register_producer()
+        product_1 = "product1"
+        product_2 = "product2"
+        product_3 = "product3"
+        self.marketplace.publish(producer_id_1, product_1)
+        self.marketplace.publish(producer_id_1, product_2)
+        self.marketplace.publish(producer_id_2, product_3)
+
+        cart_id = self.marketplace.new_cart()
+        self.marketplace.add_to_cart(cart_id, product_1)
+        self.marketplace.add_to_cart(cart_id, product_2)
+        self.marketplace.add_to_cart(cart_id, product_3)
+
+        self.assertTrue(self.marketplace.remove_from_cart(cart_id, product_1))
+        self.assertFalse(self.marketplace.remove_from_cart(cart_id, product_1))
+        self.assertTrue(
+            self.marketplace.remove_from_cart(cart_id, product_3))
+
