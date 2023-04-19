@@ -32,7 +32,7 @@ Deși pare o tema simplă, consider că este utilă pentru sedimentarea informa�
 
 Consideri implementarea naivă, eficientă, se putea mai bine?
 
-Implementarea mea nu este una naivă, dar nu este nici cea mai performanță, dat fiind faptul că testul 10 nu rulează în 60 de secunde decât foarte rar, în rest trebuie mărit timpul pentru că acesta să fie terminat, și da, se putea mai bine (cred că implementarea cu liste de liste și căutarea prin acestea aduce ineficientă, în rest cred că implementarea este una bună. )
+Implementarea mea nu este una naivă, dar nu este nici cea mai performanță, dat fiind faptul că folosesc ca si structuri de date liste (liste de liste) -> căutarea prin acestea aduce ineficientă, în rest cred că implementarea este una bună.
 
 	#Întregul enunț al temei este implementat - implementarea propriu zisa + teste unitare + logging + director .git.
 
