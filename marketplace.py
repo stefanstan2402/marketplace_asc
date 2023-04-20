@@ -42,7 +42,7 @@ class Marketplace:
 
         # logging
         self.logger = logging.getLogger('logger_tema1_asc')
-        self.logger.setLevel(logging.ERROR)
+        self.logger.setLevel(logging.INFO)
         self.handler = RotatingFileHandler(
             "marketplace.log", maxBytes=1024 * 512, backupCount=10)
         self.formatter = logging.Formatter(
