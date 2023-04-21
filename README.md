@@ -43,5 +43,7 @@ Că și resurse, am utilizat slide-urile de la labul de APD unde am făcut probl
 	#Git
 
 	Link către repo-ul de git: https://github.com/stefanstan2402/marketplace_asc
+	
+	Link drive catre .git : https://drive.google.com/drive/folders/1zAe_vsYae52c70QIJfgqJGmgghth4Nes?usp=share_link
 
 	Repo-ul este privat, o să îl fac public atunci când se vă termina și deadline ul hard al temei.
