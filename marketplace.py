@@ -37,7 +37,8 @@ class Marketplace:
         self.carts = []  # list of lists of products, each list of products belonging to a cart
         self.carts_lock = threading.Lock()  # lock for creating a cart
         self.id_cart = 0  # id of the cart
-        self.lock_add_cart = threading.Lock()  # lock for adding a product to a cart
+        # lock for removing product in cart/products, because remove is not thread safe
+        self.lock_remove = threading.Lock()
         self.lock_print = threading.Lock()  # lock for printing, not to interleave prints
 
         # logging
@@ -122,15 +123,16 @@ class Marketplace:
         # :returns True or False. If the caller receives False, it should wait and then try again
         """
         self.logger.info("Cart %d wants to add %s", cart_id, product)
-        with self.lock_add_cart:
-            for producer in self.products:
-                if product in producer:
+
+        for producer in self.products:
+            if product in producer:
+                with self.lock_remove:
                     j = self.products.index(producer)
                     self.products[j].remove(product)
-                    self.carts[cart_id].append(product)
-                    self.logger.info(
-                        "In cart %d was addes %s", cart_id, product)
-                    return True
+                self.carts[cart_id].append(product)
+                self.logger.info(
+                    "In cart %d was addes %s", cart_id, product)
+                return True
         self.logger.error("In cart %d was not added %s", cart_id, product)
         return False
 
@@ -147,17 +149,17 @@ class Marketplace:
         # :param product: the product to remove from cart
         """
         self.logger.info("Cart %d wants to remove %s", cart_id, product)
-        with self.lock_add_cart:
-            for prod in self.carts[cart_id]:
-                if prod == product:
+        for prod in self.carts[cart_id]:
+            if prod == product:
+                with self.lock_remove:
                     self.carts[cart_id].remove(product)
-                    for prod in self.all_products:
-                        if product in prod:
-                            self.products[self.all_products.index(
-                                prod)].append(product)
-                    self.logger.info(
-                        "From cart %d was removed %s", cart_id, product)
-                    return True
+                for prod in self.all_products:
+                    if product in prod:
+                        self.products[self.all_products.index(
+                            prod)].append(product)
+                self.logger.info(
+                    "From cart %d was removed %s", cart_id, product)
+                return True
         self.logger.error("Product %s not found in cart %d", product, cart_id)
         return False
 
@@ -188,6 +190,7 @@ class TestMarketplace(unittest.TestCase):
     """
     # Test class for Marketplace
     """
+
     def setUp(self):
         self.marketplace = Marketplace(3)
 
