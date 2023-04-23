@@ -37,8 +37,11 @@ class Marketplace:
         self.carts = []  # list of lists of products, each list of products belonging to a cart
         self.carts_lock = threading.Lock()  # lock for creating a cart
         self.id_cart = 0  # id of the cart
-        # lock for removing product in cart/products, because remove is not thread safe
-        self.lock_remove = threading.Lock()
+
+        # locks for removing product in cart/products, because remove is not thread safe
+        self.lock_remove_products = threading.Lock()
+        self.lock_remove_carts = threading.Lock()
+
         self.lock_print = threading.Lock()  # lock for printing, not to interleave prints
 
         # logging
@@ -126,7 +129,7 @@ class Marketplace:
 
         for producer in self.products:
             if product in producer:
-                with self.lock_remove:
+                with self.lock_remove_products:
                     j = self.products.index(producer)
                     self.products[j].remove(product)
                 self.carts[cart_id].append(product)
@@ -151,7 +154,7 @@ class Marketplace:
         self.logger.info("Cart %d wants to remove %s", cart_id, product)
         for prod in self.carts[cart_id]:
             if prod == product:
-                with self.lock_remove:
+                with self.lock_remove_carts:
                     self.carts[cart_id].remove(product)
                 for prod in self.all_products:
                     if product in prod:
@@ -272,4 +275,3 @@ class TestMarketplace(unittest.TestCase):
         self.assertFalse(self.marketplace.remove_from_cart(cart_id, product_1))
         self.assertTrue(
             self.marketplace.remove_from_cart(cart_id, product_3))
-
