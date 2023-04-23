@@ -45,7 +45,7 @@ class Marketplace:
         self.logger = logging.getLogger('logger_tema1_asc')
         self.logger.setLevel(logging.INFO)
         self.handler = RotatingFileHandler(
-            "marketplace.log", maxBytes=1024 * 512, backupCount=10)
+            "marketplace.log", maxBytes=1024 * 512, backupCount=50)
         self.formatter = logging.Formatter(
             '%(asctime)s - %(levelname)s - %(message)s')
         self.handler.setFormatter(self.formatter)
